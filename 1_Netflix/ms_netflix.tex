@@ -36,7 +36,8 @@
 Species interactions are key components of ecosystems but we generally have an
 incomplete picture of who-eats-who in a given community. Different techniques
 have been devised to predict species interactions using theoretical models or
-abundances. Here, we explore the $K$ nearest neighbour approach, with a special
+abundances %L'utilisation des abondances n'est pas une technique, elle sert pour une technique, analyses mutlivariées...?
+Here, we explore the $K$ nearest neighbour approach, with a special
 emphasis on recommendation. Recommenders are algorithms developed for companies
 like Netflix to predict if a customer would like a product given the
 preferences of similar customers. These machine learning techniques are
@@ -65,14 +66,17 @@ and using richer data to capture indirect relationships between species.
 Species form complex networks of interactions and understanding these
 interactions is a major goal of ecology \cite{pim82}. The problem of predicting
 whether two species will interact has been approached from various
-perspectives. Williams and Martinez \cite{wil00} build a simple theoretical
+perspectives. Williams and Martinez \cite{wil00} built a simple theoretical
 model capable of generating binary food webs sharing important features with
-real food webs, while others have worked to predict interactions from species
+real food webs %based on species niche ? Pareil pour l'autre, comment utilisent-ils les abondances ?
+, while others have worked to predict interactions from species
 abundance data \cite{ade12}. Being able to predict with high enough accuracy
 whether two species will interact given simply two sets of attributes, or the
 preferences of similar species, would be of value to conservation and invasion
 biology, allowing us to build food webs with partial information about
-interactions. However, the problem is made difficult by the small number of
+interactions. 
+%Tu peux donner un exemple en disant, que ça permet de connaitre les effets en cascade que pourrait probablement produire une perturbaiton
+However, the problem is made difficult by the small number of
 interactions relative to non-interactions, and relationships that involve more
 than two species.
 
@@ -86,7 +90,7 @@ this way: we want to know how much a species would ``like'' a prey.
 Interactions are treated as binary variables, two species interact or they
 don't, but the same methods could be applied to interaction matrices with
 preferences. There are two different ways to see the problem of species
-interaction. In the positive-only case, a species has a set of preys, and we
+interactions. In the positive-only case, a species has a set of preys, and we
 want to predict what other preys they might be interested in. This approach has
 the benefit of relying only on our most reliable information: positive
 (preferably obseved) interactions. The other approach is to see binary
@@ -94,7 +98,7 @@ interactions as a matrix filled with interactions (1s) and non-interactions
 (0s). Here, we want to predict the value of a specific missing entry (is
 species $x_i$ consuming species $x_j$?).
 
-Statistical machine learning algorithms \cite{mur12} have proven reliable to
+Statistical machine learning algorithms \cite{mur12} have proven to be reliable to
 build effective predictive models for complex data (the ``unreasonable
 effectiveness of data'' \cite{hal09}). We will use a simple technique called
 the $K$ nearest neighbour ($K$NN) algorithm both for recommendation (finding
@@ -105,10 +109,11 @@ species according to some distance (or similarity) measure, and use these $K$
 species to base a prediction. For this study, we use a data-set from
 \cite{dig14}, which contains 909 species, of which are 881 involved in
 predator-prey relationships and 871 have at least one prey. In total, the
-data-set has 34 193 interactions. The data also contains 25 binary attributes
+data-set has 34 193 interactions. The data also contains 25 binary attributes (traits)
 for each species, plus their body mass and information on their phylogeny.
 We also briefly discuss a supervised learning method, random forests, which is
 used to predict an interactions with only the species' traits.
+%C'est quand même important de dire que les data viennent de food webs de sols incluant invertébrés, plantes, détritus, bactéries, champignons. 
 
 \begin{table}
   \centering
@@ -149,6 +154,7 @@ certain that two species do not interact. Also, the $K$NN approach use
 information on what similar species do, while random forests only rely
 on traits.
 
+%La suite devrait aller dans les résultats
 We show the $K$NN is particularly effective at retrieving missing interaction
 in the positive-only case, succeeding 50\% of the times at recommending the
 right species among 881 possibilities. However, the $K$NN algorithm is
@@ -176,7 +182,7 @@ any information about other species in the community. % This is a really importa
     Cyanobacteria     & $Cy$   & Member of the cyanobacteria phylum.                              & 1 \\
     Detritivore       & $De$   & For species eating detribus.                                     & 355 \\
     Detritus          & $Ds$   & Whether the species can be classifying as a detritus.            & 2 \\
-    Fugivore          & $Fg$   & For species eating fruits.                                       & 111 \\
+    Fungivore          & $Fg$   & For species eating fungi.                                       & 111 \\
     Fungi             & $Fu$   & Member of the fungi kingdom.                                     & 2 \\
     HasShell          & $HS$   & Whether the species has a shell.                                 & 274 \\
     Herbivore         & $He$   & For species eating plants.                                       & 130 \\
@@ -525,7 +531,7 @@ weight to $w_i$ increases.
 
 \subsection{Supervised learning}
 
-Random forests predict correctly 99.55\% of the non-interactions and and
+Random forests predict correctly 99.55\% of the non-interactions and
 96.81\% of the interactions, for a TSS of 0.96. Much of this accuracy is due to
 the three real-valued traits (body mass, $Ph_0$, $Ph_1$). Without them, too
 many entries have the same feature vector $\mathbf{x}$, making it impossible
@@ -543,7 +549,8 @@ such as Netflix face: given that a user like item $i$, what is the best way to
 select other items the user would like. In this case, users are species, and
 the items are their preys, but the problem is the same. In both cases, we have
 positive evidence but observing with little solid knowledge about
-non-interactions. The approach yields strong results, with a top1 success rate
+non-interactions. %La de la phrase d'avant me semble étrange.
+The approach yields strong results, with a top1 success rate
 above 50\% in a food web with up to 881 possibilities. The approach could be
 used, for example, to reconstruct entire food webs using global database of
 interactions. The method's effectiveness rely on nestedness: how much species
@@ -605,7 +612,9 @@ the first $k$ species.
 
 Our results have two limitations. It is possible that our food web was
 exceptionally simple, and that a different food web would behave differently,
-especially if it has lower nestedness. The success of the $K$NN algorithms
+especially if it has lower nestedness. 
+%Je ne pense pas qu'on puisse qualifier cette food web en étant simple, mais il est supposé que les espèces du sol sont très opportunistes, et mangent toutes les espèces sur lesquelles elles tombes, et qu'elles sont physiquement capables de manger. D'où l'importance du bodymass.
+The success of the $K$NN algorithms
 depends on local structure: how much can we learn from similar species. If each
 species has a unique set of preys, the $K$NN will struggle more. Also, a deeper
 issue is that real food webs are not binary structures. Species, populations,
@@ -622,6 +631,8 @@ indirect relationships to be included. Understanding these hypergraphs is
 outside the scope of the $K$NN algorithm but could be understood with modern
 techniques such as Markov logic \cite{ric06}.
 
+TU pourrais rajouter un peu d'écologie là. En disant que le random forest est cool à utliser si t'as des espèces et des traits en ayant aucunes idées sur les intéractions. Alors que les recommendations marcheraient plus si t'as une food web connue, et tu veux savoir si certaines des espèces intéragiraient avec une nouvelle espèce introduite, par exemple. 
+
 
 \section{Acknowledgements}
 
@@ -629,6 +640,7 @@ PDP has been funded by an Alexander Graham Bell Graduate Scholarship from the
 National Sciences and Engineering Research Council of Canada, an Azure for
 Research award from Microsoft, and benefited from the Hardware Donation Program
 from NVIDIA.
+Merci à l'équipe de C.Digel pour la documentation des food webs.
 
 ID???
 
